@@ -1,8 +1,6 @@
 export default async function handler(req, res) {
   // 1. Verificar método
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  
 
   const { prompt } = req.body;
   const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
