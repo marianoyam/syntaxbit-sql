@@ -1,5 +1,9 @@
 {
+  "name": "syntaxbit-sql",
   "dependencies": {
-    "@google/generative-ai": "^0.24.1"
+    "next": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "@google/generative-ai": "latest"
   }
 }
