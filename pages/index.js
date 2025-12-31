@@ -6,16 +6,20 @@ export default function SyntaxBit() {
   const [loading, setLoading] = useState(false);
 
   const generarSQL = async () => {
-    setLoading(true);
+  setLoading(true);
+  try {
     const response = await fetch('/api/generate', {
-      method: 'POST',
+      method: 'POST', // <--- ASEGÚRATE QUE ESTO ESTÉ EN MAYÚSCULAS
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ prompt: input }),
     });
     const data = await response.json();
-    setResult(data.result);
-    setLoading(false);
-  };
+    setResult(data.result || data.error);
+  } catch (error) {
+    setResult("Error al conectar");
+  }
+  setLoading(false);
+};
 
   return (
     <div style={{ padding: '50px', fontFamily: 'sans-serif', maxWidth: '800px', margin: 'auto' }}>
