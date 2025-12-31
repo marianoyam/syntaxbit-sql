@@ -1,22 +1,30 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
-  // Verificar que la API KEY existe
   if (!process.env.GOOGLE_GEMINI_API_KEY) {
-    return res.status(500).json({ error: "Falta la API KEY en Vercel" });
+    return res.status(500).json({ error: "Falta la API KEY" });
   }
 
+  // Forzamos la versión v1 para evitar el error 404 de la v1beta
   const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GEMINI_API_KEY);
-  const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
+  
   try {
+    // Usamos el modelo más básico y compatible
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
     const { prompt } = req.body;
-    const result = await model.generateContent(`Actúa como SyntaxBit, un experto en SQL. Convierte esto a SQL: ${prompt}`);
-    const response = await result.response;
     
-    res.status(200).json({ result: response.text() });
+    // El prompt maestro de SyntaxBit
+    const result = await model.generateContent(`Actúa como SyntaxBit. Convierte a SQL: ${prompt}`);
+    const response = await result.response;
+    const text = response.text();
+
+    res.status(200).json({ result: text });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error de conexión con Gemini", details: error.message });
+    res.status(500).json({ 
+      error: "Error de comunicación", 
+      message: error.message 
+    });
   }
 }
